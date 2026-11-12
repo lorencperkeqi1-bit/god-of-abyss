@@ -12,7 +12,7 @@ npm run build
 npm run preview
 ```
 
-Open the preview URL printed by Vite. The landing page is `/`; **PLAY DEMO** opens `/play.html`. The build output is `demo-dist/`. `npm run dev` serves the same landing/game site locally. The build uses relative asset URLs so it works both at a domain root and under a GitHub Pages repository path.
+The Vite base is `/god-of-abyss/`, matching this repository name. Open the landing page at the printed local URL with `/god-of-abyss/` appended; **PLAY DEMO** opens `/god-of-abyss/play.html`. The build output is `demo-dist/`. `npm run dev` serves the same landing/game site locally.
 
 ## Publish with GitHub Pages
 
@@ -25,7 +25,7 @@ Open the preview URL printed by Vite. The landing page is `/`; **PLAY DEMO** ope
    git status
    git commit -m "Prepare Gods of the Abyss demo"
    git branch -M main
-   git remote add origin https://github.com/<OWNER>/<REPOSITORY>.git
+   git remote add origin https://github.com/<OWNER>/god-of-abyss.git
    git push -u origin main
    ```
 
@@ -34,11 +34,7 @@ Open the preview URL printed by Vite. The landing page is `/`; **PLAY DEMO** ope
 4. Push to `main`, or open **Actions → Deploy free game demo → Run workflow**. The workflow at `.github/workflows/deploy-demo.yml` installs dependencies, builds `demo-dist/`, and publishes it.
 5. Wait for the workflow's **Deploy to GitHub Pages** job to succeed. Its environment link is the published URL. A repository site normally has this form:
 
-   `https://<OWNER>.github.io/<REPOSITORY>/`
-
-   A user/org site normally has this form:
-
-   `https://<OWNER>.github.io/`
+   `https://<OWNER>.github.io/god-of-abyss/`
 
 6. Open that URL and test **PLAY DEMO**. Share the landing-page URL; the game itself is at the same URL with `play.html` appended.
 
