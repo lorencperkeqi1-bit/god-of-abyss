@@ -14,6 +14,8 @@ npm run preview
 
 The Vite base is `/god-of-abyss/`, matching this repository name. Open the landing page at the printed local URL with `/god-of-abyss/` appended; **PLAY DEMO** opens `/god-of-abyss/play.html`. The build output is `demo-dist/`. `npm run dev` serves the same landing/game site locally.
 
+The Pages artifact contains the landing page at `demo-dist/index.html` and the game at `demo-dist/play.html`. The repository-root [index.html](./index.html) is a legacy game entry and is not part of that artifact. Do not publish from a branch: GitHub's Jekyll branch deployment uses the repository-root entry and can overwrite the Pages artifact deployment. Set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+
 ## Publish with GitHub Pages
 
 1. Create a public GitHub repository for this project. Check the files before publishing; do not include `.env` files, credentials, or API keys.
