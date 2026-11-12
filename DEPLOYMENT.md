@@ -8,11 +8,11 @@ From the project directory:
 
 ```sh
 npm ci
-npm run build:demo
-npm run preview:demo
+npm run build
+npm run preview
 ```
 
-Open the preview URL printed by Vite. The landing page is `/`; **PLAY DEMO** opens `/play.html`. The build output is `demo-dist/`. The deployment build uses relative asset URLs so it works both at a domain root and under a GitHub Pages repository path.
+Open the preview URL printed by Vite. The landing page is `/`; **PLAY DEMO** opens `/play.html`. The build output is `demo-dist/`. `npm run dev` serves the same landing/game site locally. The build uses relative asset URLs so it works both at a domain root and under a GitHub Pages repository path.
 
 ## Publish with GitHub Pages
 

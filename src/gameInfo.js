@@ -1,19 +1,19 @@
 const CHARACTER_ASSETS = Object.freeze({
-    ZEUS: '/assets/characters/zeus_portrait.png',
-    HADES: '/assets/characters/hades_portrait.png',
-    MEDUSA: '/assets/characters/medusa_portrait.png',
-    POSEIDON: '/assets/characters/poseidon_portrait.png',
-    ARES: '/assets/characters/ares_portrait.png',
-    TYPHON: '/assets/characters/typhon_portrait.png.jpeg'
+    ZEUS: 'assets/characters/zeus_portrait.png',
+    HADES: 'assets/characters/hades_portrait.png',
+    MEDUSA: 'assets/characters/medusa_portrait.png',
+    POSEIDON: 'assets/characters/poseidon_portrait.png',
+    ARES: 'assets/characters/ares_portrait.png',
+    TYPHON: 'assets/characters/typhon_portrait.png.jpeg'
 });
 
 const SYMBOL_ASSETS = Object.freeze({
-    SIGIL: '/assets/symbols/symbol_sigil.png',
-    SKULL: '/assets/symbols/symbol_skull.png',
-    DRACHMA: '/assets/symbols/symbol_drachma.png',
-    SEAL: '/assets/symbols/symbol_seal.png',
-    CHARGE: '/assets/symbols/symbol_charge.png',
-    RIFT: '/assets/symbols/symbol_rift.png'
+    SIGIL: 'assets/symbols/symbol_sigil.png',
+    SKULL: 'assets/symbols/symbol_skull.png',
+    DRACHMA: 'assets/symbols/symbol_drachma.png',
+    SEAL: 'assets/symbols/symbol_seal.png',
+    CHARGE: 'assets/symbols/symbol_charge.png',
+    RIFT: 'assets/symbols/symbol_rift.png'
 });
 
 const SYMBOL_DETAILS = Object.freeze({
