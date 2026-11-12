@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gods of the Abyss</title>
+    <link rel="stylesheet" href="./game.css" />
+    <style>
+      html body { background-image: url("./assets/characters/basic_bg.png"); }
+      body #app { height: calc(100vh - 34px); }
+      #ui-overlay .buy-bonus-btn {
+        top: 46px;
+        background-image: url("./assets/characters/bonusbuy_button.png");
+      }
+      .demo-toolbar {
+        position: relative;
+        z-index: 1400;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        width: 100%;
+        height: 34px;
+        padding: 3px 8px;
+        border-bottom: 1px solid rgba(219, 187, 111, .24);
+        background: rgba(7, 10, 17, .96);
+        font: 700 8px Arial, sans-serif;
+        letter-spacing: .1em;
+      }
+      .demo-toolbar span, .demo-toolbar a {
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 9px;
+        border: 1px solid rgba(219, 187, 111, .7);
+        border-radius: 5px;
+        background: rgba(7, 10, 17, .9);
+        color: #f1d99c;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .demo-toolbar a { color: #d2e8f0; border-color: rgba(112, 184, 213, .6); }
+      .landscape-hint {
+        display: none;
+        position: absolute;
+        top: 45px;
+        left: 0;
+        right: 0;
+        color: #e4d3a6;
+        font: 700 9px Arial, sans-serif;
+        letter-spacing: .12em;
+        text-align: center;
+        pointer-events: none;
+      }
+      @media (orientation: portrait) {
+        .landscape-hint { display: block; }
+      }
+      @media (max-width: 520px) {
+        .demo-toolbar { gap: 4px; padding-right: 5px; font-size: 7px; }
+        .demo-toolbar span, .demo-toolbar a { min-height: 24px; padding: 0 6px; }
+        #ui-overlay .buy-bonus-btn { top: 40px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="demo-toolbar" aria-label="Demo controls">
+      <span>DEMO MODE · VIRTUAL CREDITS</span>
+      <a href="./play.html" aria-label="Restart demo with a fresh virtual credit balance">RESTART</a>
+    </nav>
+    <p class="landscape-hint">ROTATE TO LANDSCAPE FOR THE BEST PLAY EXPERIENCE</p>
+    <!-- Game Container / Phaser Canvas will mount here -->
+    <div id="app"></div>
+
+    <!-- BUY BONUS UI OVERLAY -->
+    <div id="ui-overlay">
+      <button id="betSelectorTrigger" class="bet-selector-trigger" type="button" aria-haspopup="dialog"
+              aria-controls="betSelectionOverlay">
+        <span class="bet-selector-trigger-label">TOTAL BET / SPIN</span>
+        <span id="currentBetAmount" class="bet-selector-trigger-amount">10 CR</span>
+      </button>
+      <div id="betSelectionOverlay" class="bet-selector-overlay" hidden>
+        <section id="betSelectionPanel" class="bet-selector-panel" role="dialog" aria-modal="true"
+                 aria-labelledby="betSelectorTitle">
+          <div class="bet-selector-heading">
+            <div>
+              <p class="bet-selector-eyebrow">WAGER CONTROL</p>
+              <h2 id="betSelectorTitle">SELECT YOUR BET</h2>
+            </div>
+            <button id="closeBetSelector" class="bet-selector-close" type="button" aria-label="Close bet selector">×</button>
+          </div>
+          <div class="bet-stepper" aria-label="Adjust bet amount">
+            <button id="decreaseBet" class="bet-stepper-button" type="button" aria-label="Decrease bet">−</button>
+            <div class="bet-stepper-value">
+              <span id="selectedBetAmount">10 CR</span>
+              <small>SELECTED BET</small>
+            </div>
+            <button id="increaseBet" class="bet-stepper-button" type="button" aria-label="Increase bet">+</button>
+          </div>
+          <div class="bet-limits">
+            <span>MIN <strong id="minimumBet">5 CR</strong></span>
+            <span>MAX <strong id="maximumBet">500 CR</strong></span>
+          </div>
+          <div id="betPresetGrid" class="bet-preset-grid" aria-label="Preset bet amounts"></div>
+          <div class="bet-total">
+            <span>TOTAL BET PER SPIN</span>
+            <strong id="totalBetAmount">10 CR</strong>
+          </div>
+          <div class="bet-selector-actions">
+            <button id="cancelBetSelection" class="bet-action cancel" type="button">CANCEL</button>
+            <button id="confirmBetSelection" class="bet-action confirm" type="button">CONFIRM BET</button>
+          </div>
+          <p id="betSelectorStatus" class="bet-selector-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+      <button id="gameInfoButton" class="game-info-button" type="button" aria-label="Game information"
+              aria-haspopup="dialog" aria-controls="gameInfoOverlay">
+        <span class="game-info-icon" aria-hidden="true">?</span>
+        <span class="game-info-label">INFO</span>
+      </button>
+      <button id="autoplayButton" class="autoplay-button" type="button">AUTOPLAY</button>
+      <section id="autoplayStatus" class="autoplay-status" aria-live="polite" hidden>
+        <strong>AUTOPLAY ACTIVE</strong>
+        <span id="autoplayStatusDetails"></span>
+      </section>
+      <div id="autoplayOverlay" class="autoplay-overlay" hidden>
+        <section class="autoplay-panel" role="dialog" aria-modal="true" aria-labelledby="autoplayTitle">
+          <div class="autoplay-heading">
+            <div>
+              <p class="autoplay-eyebrow">AUTOMATIC PLAY</p>
+              <h2 id="autoplayTitle">SET AUTOPLAY</h2>
+            </div>
+            <button id="closeAutoplay" class="autoplay-close" type="button" aria-label="Close autoplay settings">×</button>
+          </div>
+          <div class="autoplay-count-options" role="group" aria-label="Number of spins">
+            <button type="button" data-autoplay-count="10" class="is-selected">10 SPINS</button>
+            <button type="button" data-autoplay-count="25">25 SPINS</button>
+            <button type="button" data-autoplay-count="50">50 SPINS</button>
+            <button type="button" data-autoplay-count="100">100 SPINS</button>
+          </div>
+          <label class="autoplay-custom-count" for="autoplayCustomCount">
+            Custom spin count
+            <input id="autoplayCustomCount" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="Enter 1–1,000">
+          </label>
+          <dl class="autoplay-summary">
+            <div><dt>Current bet</dt><dd id="autoplayBet">10 CR</dd></div>
+            <div><dt>Selected spins</dt><dd id="autoplaySelectedCount">10</dd></div>
+            <div><dt>Estimated total wager</dt><dd id="autoplayEstimatedWager">100 CR</dd></div>
+            <div><dt>Current balance</dt><dd id="autoplayBalance">1,000 CR</dd></div>
+          </dl>
+          <label class="autoplay-resume-option">
+            <input id="resumeAutoplayAfterBonus" type="checkbox">
+            <span>RESUME AUTOPLAY AFTER BONUS</span>
+          </label>
+          <p id="autoplayMessage" class="autoplay-message" role="status" aria-live="polite"></p>
+          <div class="autoplay-actions">
+            <button id="cancelAutoplay" type="button" class="autoplay-cancel">CANCEL</button>
+            <button id="startAutoplay" type="button" class="autoplay-start">START AUTOPLAY</button>
+          </div>
+        </section>
+      </div>
+      <section id="bonusAutoControls" class="bonus-auto-controls" hidden aria-label="Bonus autoplay controls">
+        <div class="bonus-auto-status">
+          <strong>AUTOMATIC BONUS</strong>
+          <span id="bonusAutoSpinsLeft">0 SPINS LEFT</span>
+        </div>
+        <div id="bonusAutoDetails" class="bonus-auto-details"></div>
+        <div class="bonus-auto-settings">
+          <label><input id="skipBonusAnimations" type="checkbox"> SKIP ANIMATIONS</label>
+          <label for="bonusAnimationSpeed">SPEED
+            <select id="bonusAnimationSpeed">
+              <option value="1">1×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </label>
+          <button id="pauseBonusAuto" type="button">PAUSE AUTO</button>
+        </div>
+      </section>
+      <div id="gameInfoOverlay" class="game-info-overlay" hidden>
+        <section id="gameInfoDialog" class="game-info-dialog" role="dialog" aria-modal="true"
+                 aria-labelledby="gameInfoTitle">
+          <header class="game-info-header">
+            <div class="game-info-title-group">
+              <span class="game-info-mark" aria-hidden="true">?</span>
+              <div>
+                <p class="game-info-eyebrow">GODS OF THE ABYSS</p>
+                <h2 id="gameInfoTitle">GAME GUIDE</h2>
+              </div>
+            </div>
+            <button id="closeGameInfo" class="game-info-close" type="button" aria-label="Close game information">×</button>
+          </header>
+          <nav class="game-info-tabs" role="tablist" aria-label="Game guide sections">
+            <button class="game-info-tab is-active" type="button" role="tab" data-info-tab="play" aria-selected="true">HOW TO PLAY</button>
+            <button class="game-info-tab" type="button" role="tab" data-info-tab="paytable" aria-selected="false">SYMBOLS &amp; PAYTABLE</button>
+            <button class="game-info-tab" type="button" role="tab" data-info-tab="bonus" aria-selected="false">BONUS FEATURES</button>
+            <button class="game-info-tab" type="button" role="tab" data-info-tab="rules" aria-selected="false">RULES</button>
+          </nav>
+          <main id="gameInfoContent" class="game-info-content"></main>
+        </section>
+      </div>
+      <button id="buyBonusBtn" class="buy-bonus-btn" aria-label="Buy bonus">
+        <span class="buy-bonus-price" aria-hidden="true">2,000 CR</span>
+      </button>
+      <label id="reducedMotionControl" class="reduced-motion-control">
+        <input id="reducedMotionToggle" type="checkbox" />
+        Reduced motion
+      </label>
+      <section id="bonusMeter" class="bonus-meter" aria-label="Typhon Bonus Meter">
+        <div class="bonus-meter-heading">
+          <span class="bonus-meter-title">TYPHON BONUS METER</span>
+          <span id="bonusMeterStage" class="bonus-meter-stage">AWAKENING</span>
+        </div>
+        <div class="bonus-meter-track" role="progressbar" aria-label="Typhon bonus progression"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="bonus-meter-segment" data-stage="1">
+            <span class="bonus-meter-fill"></span>
+          </div>
+          <div class="bonus-meter-segment" data-stage="2">
+            <span class="bonus-meter-fill"></span>
+          </div>
+          <div class="bonus-meter-segment" data-stage="3">
+            <span class="bonus-meter-fill"></span>
+          </div>
+        </div>
+        <div class="bonus-meter-stage-labels" aria-hidden="true">
+          <span>AWAKENING</span>
+          <span>ASCENSION</span>
+          <span>DIVINE POWER</span>
+        </div>
+        <div class="bonus-meter-status">
+          <span id="bonusMeterProgress" class="bonus-meter-progress">0 / 8 PROGRESS | NEED 8</span>
+          <span id="bonusMeterSpins" class="bonus-meter-spins">10 SPINS LEFT</span>
+        </div>
+        <div id="bonusMeterFeatures" class="bonus-meter-features">ZEUS FEATURE ACTIVE</div>
+        <div id="bonusMeterAnnouncement" class="bonus-meter-announcement" role="status" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- PURCHASE CONFIRMATION MODAL -->
+    <div id="buyBonusModal" class="modal-overlay" style="display: none;">
+      <div class="modal-box">
+        <h2>DIVINE CONVERGENCE</h2>
+        <p id="buyBonusCostText">Cost: 2,000 CR</p>
+        <label for="buyBonusPath">Bonus path</label>
+        <select id="buyBonusPath">
+          <option value="OLYMPUS">Olympus</option>
+          <option value="UNDERWORLD">Underworld</option>
+          <option value="RIFT">Rift</option>
+        </select>
+        <p class="modal-warning">Starting a bonus uses virtual credits only. A win is not guaranteed.</p>
+        <div class="modal-buttons">
+          <button id="confirmBuyBtn" class="modal-btn confirm">CONFIRM</button>
+          <button id="cancelBuyBtn" class="modal-btn cancel">CANCEL</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
